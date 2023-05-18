@@ -1,0 +1,25 @@
+{
+  "name": "esp32_json",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SczSca/Esp32_PubSubclient.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SczSca/Esp32_PubSubclient/issues"
+  },
+  "homepage": "https://github.com/SczSca/Esp32_PubSubclient#readme",
+  "dependencies": {
+    "mqtt": "^4.3.7",
+    "url": "^0.11.0",
+    "ws": "^8.13.0"
+  }
+}
