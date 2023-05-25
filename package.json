@@ -2,9 +2,11 @@
   "name": "esp32_json",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "set NODE_ENV=development&& node server_dev.js",
+    "prod": "set NODE_ENV=production&& node server.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,8 @@
   },
   "homepage": "https://github.com/SczSca/Esp32_PubSubclient#readme",
   "dependencies": {
-    "mqtt": "^4.3.7",
+    "dotenv": "^16.0.3",
+    "mqtt": "^4.0.1",
     "url": "^0.11.0",
     "ws": "^8.13.0"
   }
