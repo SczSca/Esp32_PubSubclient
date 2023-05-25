@@ -12,12 +12,12 @@ const {connectToBroker} = require('../config/use_ws.js');
 //     subscribeToTopic();
 //     // subscribeController.subscribeToTopic();
 // })
-window.onload = (event) => {
-    console.log("load")
-    connectToBroker('mqttSubscriber');
-    console.log(1)
-    subscribeToTopic();
-}
+// window.onload = (event) => {
+//     console.log("load")
+// }
 
+connectToBroker('mqttSubscriber');
+// console.log(1)
+subscribeToTopic();
 //p
-console.log(2)
+// console.log(2)

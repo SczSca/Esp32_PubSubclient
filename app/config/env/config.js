@@ -18,6 +18,8 @@ module.exports ={
     MQTT_HOST : process.env.MQTT_HOST,
     MQTT_TOPIC: process.env.MQTT_TOPIC,
     MQTT_QOS : process.env.MQTT_QOS,
+    MQTT_USER : process.env.MQTT_USER,
+    MQTT_PASS : process.env.MQTT_PASS
     // NODE_ENV: process.env.NODE_ENV,
     // DB_HOST: process.env.DB_HOST,
     // PORT: process.env.SERVER_PORT,

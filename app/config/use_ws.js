@@ -1,6 +1,6 @@
 // const fs = require('fs') ver si está madre tiene una función o q pedo
 const mqtt = require('mqtt');
-const {MQTT_PROTOCOL, MQTT_PORT, MQTT_HOST} = require('./env/config.js');
+const {MQTT_PROTOCOL, MQTT_PORT, MQTT_HOST, MQTT_USER, MQTT_PASS} = require('./env/config.js');
 //"../../node_modules/mqtt/types/index.d.ts"
 // import * as mqtt from 'https://unpkg.com/mqtt/dist/mqtt.min.js';
 
@@ -27,8 +27,8 @@ const connectToBroker = (mqttClientType) =>{
     /**
      * Por defecto, el mosquitto broker no necesita de credenciales de usuario para la conexión
      */
-    // username: 'user_test', 
-    // password: 'password_test',
+    username: MQTT_USER, 
+    password: MQTT_PASS,
     reconnectPeriod: 1000,
     // para más detalles y opciones para la conexion, repositorio git: https://github.com/mqttjs/MQTT.js#mqttclientstreambuilder-options
   }
