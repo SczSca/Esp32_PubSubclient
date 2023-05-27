@@ -7,19 +7,17 @@ const path = require('path');
 dotenv.config({
   path: path.resolve(__dirname, process.env.NODE_ENV + '.env')
 });
-const MQTT_PROTOCOL = process.env.MQTT_PROTOCOL;
-const MQTT_PORT = process.env.MQTT_PORT;
-const MQTT_HOST = process.env.MQTT_HOST;
-const MQTT_TOPIC = process.env.MQTT_TOPIC;
-const MQTT_QOS = process.env.MQTT_QOS;
+
 module.exports ={
     MQTT_PROTOCOL : process.env.MQTT_PROTOCOL,
     MQTT_PORT : process.env.MQTT_PORT,
     MQTT_HOST : process.env.MQTT_HOST,
-    MQTT_TOPIC: process.env.MQTT_TOPIC,
+    MQTT_TOPIC_SUBSCRIBER: process.env.MQTT_TOPIC_SUBSCRIBER,
+    MQTT_TOPIC_PUBLISHER: process.env.MQTT_TOPIC_PUBLISHER,
     MQTT_QOS : process.env.MQTT_QOS,
     MQTT_USER : process.env.MQTT_USER,
-    MQTT_PASS : process.env.MQTT_PASS
+    MQTT_PASS : process.env.MQTT_PASS,
+    WS_BROKERID : process.env.WS_BROKERID
     // NODE_ENV: process.env.NODE_ENV,
     // DB_HOST: process.env.DB_HOST,
     // PORT: process.env.SERVER_PORT,

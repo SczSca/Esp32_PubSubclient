@@ -1,10 +1,10 @@
 // const fs = require('fs') ver si está madre tiene una función o q pedo
+const WebSocket = require('ws');
 const mqtt = require('mqtt');
-const {MQTT_PROTOCOL, MQTT_PORT, MQTT_HOST, MQTT_USER, MQTT_PASS} = require('./env/config.js');
-//"../../node_modules/mqtt/types/index.d.ts"
-// import * as mqtt from 'https://unpkg.com/mqtt/dist/mqtt.min.js';
-
-// import { MQTT_PROTOCOL, MQTT_PORT, MQTT_HOST } from './env/config.mjs';
+const {
+  MQTT_PROTOCOL, MQTT_PORT, MQTT_HOST, MQTT_USER, MQTT_PASS, MQTT_TOPIC_SUBSCRIBER, 
+  MQTT_TOPIC_PUBLISHER,MQTT_QOS, WS_BROKERID
+} = require('./env/config.js');
 
 const connectOptions = {
   protocol: MQTT_PROTOCOL,
@@ -18,6 +18,7 @@ const connectOptions = {
  * Se guarda la conexión al broker en variable "mqttClient" para uso en metodos de los clientes subscriptor y publicador
 */
 let mqttClient;
+
 const connectToBroker = (mqttClientType) =>{  
   const clientId = mqttClientType + Math.random().toString(16).substring(2, 8)
   const options = {
@@ -51,7 +52,13 @@ const connectToBroker = (mqttClientType) =>{
   }
   
   mqttClient = mqtt.connect(connectUrl, options)
-  
+  /**
+   * INSTANCIA DE CLIENTE WS que nos permitirá:
+   * -  mandar por wss los datos recibidos por mqtt [valor de los sensores]
+   * -  mandar por mqtt los datos recibidos por wss [activacion de relevadores por la web]
+   */
+  const socket = new WebSocket ('ws://localhost:8081');
+
   // https://github.com/mqttjs/MQTT.js#event-connect
   mqttClient.on('connect', () => {
     console.log(`${protocol}: Connected \n mqttClient:  ${clientId}`);
@@ -69,12 +76,47 @@ const connectToBroker = (mqttClientType) =>{
   })
   
   // https://github.com/mqttjs/MQTT.js#event-message
+  socket.onopen = () =>{
+      console.log('Connection established');
+      const credentials ={
+          broker: WS_BROKERID
+      }
+      socket.send(JSON.stringify(credentials));
+      
+      /**
+       * CONFIGURACION DEL CLIENTE WS QUE ACTUARA COMO BROKER ENTRE LA COMUNICACION MQTT Y EL CLIENTE WEB
+       * - lo que reciba de los otros ws, lo mandara al broker mqtt para que esp32 reciba las instrucciones de los bulbos
+      */
+      socket.onmessage = (wsMessage) =>{
+        console.log(wsMessage.data.toString());
+        //verificar si así se manda el payload por mqtt
+        mqttClient.publish(MQTT_TOPIC_PUBLISHER, wsMessage.data.toString(), { MQTT_QOS }, (error) => { 
+          if (error) {
+            console.error(error)
+          }
+        })
+      }
+  }
   mqttClient.on('message', (topic, payload) => {
-    console.log('Received Message:', topic, payload.toString())
+    const decodedPayload = payload.toString()
+    const jsonPayload = JSON.parse(decodedPayload)
+    jsonPayload.target = 'broadcast'
+    socket.send(JSON.stringify(jsonPayload))
+    
+
+  })
+  
+  mqttClient.subscribe(MQTT_TOPIC_SUBSCRIBER, { MQTT_QOS }, (error) => {
+    if (error) {
+        console.log('subscribe error:', error)
+        return
+    }
+    console.log(`${protocol}: Subscribe to topic '${MQTT_TOPIC_SUBSCRIBER}'`)
   })
 }
 
+
+
 module.exports ={
-  connectToBroker,
-  mqttClient
+  connectToBroker
 }
