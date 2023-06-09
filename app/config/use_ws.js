@@ -57,7 +57,7 @@ const connectToBroker = (mqttClientType) =>{
    * -  mandar por wss los datos recibidos por mqtt [valor de los sensores]
    * -  mandar por mqtt los datos recibidos por wss [activacion de relevadores por la web]
    */
-  const socket = new WebSocket ('ws://localhost:8081');
+  const socket = new WebSocket (`ws://${MQTT_HOST}:8081`);
 
   // https://github.com/mqttjs/MQTT.js#event-connect
   mqttClient.on('connect', () => {
