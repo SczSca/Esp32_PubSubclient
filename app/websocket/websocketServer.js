@@ -53,11 +53,13 @@ wss.on('connection', (ws) => {
             bulb: bool [0 || 1]
         }
      */
-    const jsonData = JSON.parse(String.fromCharCode(...JSON.parse(jsonMessage).data))
+    const jsonData = JSON.parse(String.fromCharCode(...JSON.parse(jsonMessage).data));
+    // const jsonString = JSON.stringify(jsonData);
     if(jsonData.target === 'clientBroker') {
-        sendToClientBroker(JSON.stringify(jsonData), ws);       
+        sendToClientBroker(JSON.stringify(jsonData), ws);
+        broadcastExceptItself(JSON.stringify(jsonData), ws);       
     }else if(jsonData.target === 'broadcast'){
-        broadcast(JSON.stringify(jsonData));
+        broadcastExceptBroker(JSON.stringify(jsonData));
     }else if(jsonData.broker == WS_BROKERID){
         clientBroker = ws;
         console.log('Client broker connected');        
@@ -69,12 +71,55 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     // Eliminar cliente de la lista cuando se desconecta
+    const jsonToggleModo = {
+        target: 'clientBroker',
+        mode: '1'
+    }
+    const stringToggleModo = JSON.stringify(jsonToggleModo);
+    /**
+     *  Todos los bulbos se setean en 1 cuando se desconecta el cliente ws
+     *  donde bulbo: 1 es apagado y bulbo: 0 es encendido  
+     */ 
+    const jsonToggleSensorTemp = {
+        target: 'clientBroker',
+        sensor: 'temperatura-sw',
+        bulbo: 1
+    }
+    const stringToggleSensorTemp = JSON.stringify(jsonToggleSensorTemp);
+
+    const jsonToggleSensorMov = {
+        target: 'clientBroker',
+        sensor: 'movimiento-sw',
+        bulbo: 1
+    }
+    const stringToggleSensorMov = JSON.stringify(jsonToggleSensorMov);
+
+    const jsonToggleSensorUv = {
+        target: 'clientBroker',
+        sensor: 'uv-sw',
+        bulbo: 1
+    }
+    const stringToggleSensorUv = JSON.stringify(jsonToggleSensorUv);
+
+    const jsonToggleSensorSonico = {
+        target: 'clientBroker',
+        sensor: 'sonico-sw',
+        bulbo: 1
+    }
+    const stringToggleSensorSonico = JSON.stringify(jsonToggleSensorSonico);
+
+    const arrStringMessages = [stringToggleModo, stringToggleSensorTemp,
+         stringToggleSensorMov, stringToggleSensorUv, stringToggleSensorSonico];
+    arrStringMessages.forEach((message) => {
+        sendToClientBroker(message, ws);
+        broadcastExceptItself(message, ws);
+    });
     clients.delete(ws);
     console.log('Client disconnected');
   });
 });
 
-function broadcast(message, isBinary) {
+function broadcastExceptBroker(message, isBinary) {
   // Enviar el mensaje a todos los clientes conectados excepto el mensajero
   clients.forEach((client) => {
     if(client !== clientBroker && client.readyState == WebSocket.OPEN){
@@ -83,6 +128,15 @@ function broadcast(message, isBinary) {
     
   });
 }
+function broadcastExceptItself(message, ws ,  isBinary) {
+    // Enviar el mensaje a todos los clientes conectados excepto el mensajero
+    clients.forEach((client) => {
+      if(client !== clientBroker && client !== ws && client.readyState == WebSocket.OPEN){
+          client.send(message, { binary: isBinary});
+      }
+      
+    });
+  }
 
 //Función que se encarga de que los clientes ws se comuniquen con el cliente ws broker
 function sendToClientBroker(message, ws, isBinary) {
