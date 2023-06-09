@@ -5,6 +5,11 @@ const path = require('path');
 // import * as dotenv from 'https://cdn.jsdelivr.net/npm/dotenv@16.0.3/lib/main.min.js';
 
 dotenv.config({
+  /**
+   * This path is used to configure the environment file that will be used.
+   * In production environment, this will be changed by:
+   *  path: path.resolve(__dirname, 'production.env')
+   */
   path: path.resolve(__dirname, process.env.NODE_ENV + '.env')
 });
 
