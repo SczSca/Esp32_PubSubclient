@@ -11,15 +11,15 @@
 #include <ArduinoJson.h>
 #include "PinesGlobales.h"
 /* Directivas de configuración de red y parámetros MQTT */
-#define HOTSPOT_WIFI  "Galaxy"              /* Nombre del punto de acceso a conectarse */
-#define HOTSPOT_PWD   "12345678"            /* Contraseña de la red */
-#define MQTT_SERVER   "64.227.111.58"       /* Dirección del Broker MQTT */
+#define HOTSPOT_WIFI  "Nombre_Hotspot"              /* Nombre del punto de acceso a conectarse */
+#define HOTSPOT_PWD   "Password_Hotspot"            /* Contraseña de la red */
+#define MQTT_SERVER   "IP/Dominio_Server"       /* Dirección del Broker MQTT */
 #define MQTT_PORT     1883                  /* Puerto del Broker MQTT */
-#define TXTOPIC       "/nodejs/sensores"        /* Nombre del topic de publicación */
-#define RXTOPIC       "/nodejs/bulbos"      /* Nombre del topic de suscripción */
-#define RXTOPIC1      "/SEIoT/RX_TEST1"     /* Nombre del topic de suscripción */
-//#define USERNAME      "dan"                 /* Nombre de Usuario */
-//#define USERPASS      "DrFKe33cscalibur"    /* Contraseña de acceso al Broker */
+#define TXTOPIC       "/YourTopic/Subscription"        /* Nombre del topic de publicación */
+#define RXTOPIC       "/YourTopic/Publish"      /* Nombre del topic de suscripción */
+#define RXTOPIC1      "/YourTopic/Publish2"     /* Nombre del topic de suscripción 2 || Si se necesita */
+#define USERNAME      "Your_MQTTUsername"                 /* Nombre de Usuario */
+#define USERPASS      "Your_MQTTPassword"    /* Contraseña de acceso al Broker */
 /* Clase para la gestión de la red WiFi y el protocolo MQTT */
 class MQTT {
   
@@ -104,7 +104,7 @@ void MQTT :: reconnect_MQTT ( void ) {
       
       Serial.print ( F ( "Conectado nuevamente al servidor" ) );
 
-      if ( client.connect ( "Client_test", "dan", "DrFKe33cscalibur")) {             /* Si el cliente se conecta, el cliente puede tener autentificación */
+      if ( client.connect ( "Client_test", USERNAME, USERPASS)) {             /* Si el cliente se conecta, el cliente puede tener autentificación */
         
         Serial.println ( F ( "Cliente conectado" ) );
         
